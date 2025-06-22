@@ -1,0 +1,45 @@
+---
+config:
+  layout: dagre
+  theme: mc
+  look: handDrawn
+---
+flowchart TD
+ subgraph SQL_Workflow["SQL Agent"]
+        E["Safety Validator"]
+        C@{ label: "<b>🗄️ SQL Generator</b><br><span style=\"font-size:12px\">(RAG - PGVector)</span>" }
+        F["Syntax Validator"]
+        G["✋ Human Confirmation"]
+        H["Execute SQL"]
+  end
+ subgraph Chat_Workflow["Chat ReAct Agent"]
+        K@{ label: "🛠️ Tools<br><span style=\"font-size:12px\">• SQL Explainer<br>• SQL Example Logger<br></span>" }
+        D["<b>💬 Chat</b>"]
+  end
+    start_node(("__start__")) --> B{"Main Router"}
+    B -. SQL .-> C
+    B -. Chat .-> D
+    C -.-> E
+    C -. No SQL output .-> end_node
+    E -. safe .-> F
+    F -. valid .-> G
+    G -. Approved .-> H
+    D -.-> K
+    K --> D
+    H --> end_node(("__end__"))
+    G -. Rejected .-> end_node
+    E -. unsafe .-> end_node
+    F -. invalid .-> end_node
+    D --> end_node
+    C@{ shape: rect}
+    K@{ shape: rect}
+     E:::Ash
+     F:::Ash
+     K:::Ash
+     D:::Sky
+    classDef Sky stroke-width:1px, stroke-dasharray:none, stroke:#374D7C, fill:#E2EBFF, color:#374D7C
+    classDef Ash stroke-width:1px, stroke-dasharray:none, stroke:#999999, fill:#EEEEEE, color:#000000
+    style C fill:#f3e5f5
+    style G fill:#fff9c4
+    style H fill:#ffebee
+    style B fill:#fff3e0

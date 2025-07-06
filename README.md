@@ -23,6 +23,7 @@ By the end of the tutorial, you'll have **a fully working solution you can adapt
 ![Agent Flow Diagram](./artifacts/agent-flow.png)
 
 The system intelligently routes user queries through specialized agents:
+
 - **SQL Agent**: Handles database queries with RAG context retrieval
 - **Chat ReAct Agent**: Manages conversational interactions with custom tools
 

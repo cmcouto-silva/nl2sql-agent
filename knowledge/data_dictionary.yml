@@ -1,0 +1,656 @@
+databases:
+  olist_ecommerce:
+    name: olist_ecommerce
+    schemas:
+      ecommerce:
+        name: ecommerce
+        tables:
+          customers:
+            name: customers
+            schema_name: ecommerce
+            description: This dataset has information about the customer and its location.
+              Use it to identify unique customers in the orders dataset and to find
+              the orders delivery location. At our system each order is assigned to
+              a unique customer_id. This means that the same customer will get different
+              ids for different orders. The purpose of having a customer_unique_id
+              on the dataset is to allow you to identify customers that made repurchases
+              at the store. Otherwise you would find that each order had a different
+              customer associated with.
+            primary_keys:
+            - customer_id
+            foreign_keys: []
+            columns:
+            - name: customer_id
+              description: key to the orders dataset. Each order has a unique customer_id.
+              type: TEXT
+              is_primary_key: true
+              is_nullable: false
+              foreign_keys: []
+            - name: customer_unique_id
+              description: unique identifier of a customer.
+              type: TEXT
+              is_primary_key: false
+              is_nullable: false
+              foreign_keys: []
+            - name: customer_zip_code_prefix
+              description: first five digits of customer zip code
+              type: TEXT
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: customer_city
+              description: customer city name
+              type: TEXT
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: customer_state
+              description: customer state
+              type: TEXT
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+          geolocation:
+            name: geolocation
+            schema_name: ecommerce
+            description: This dataset has information Brazilian zip codes and its
+              lat/lng coordinates. Use it to plot maps and find distances between
+              sellers and customers.
+            primary_keys:
+            - geolocation_id
+            foreign_keys: []
+            columns:
+            - name: geolocation_id
+              description: Primary Key
+              type: INTEGER
+              is_primary_key: true
+              is_nullable: false
+              foreign_keys: []
+            - name: geolocation_zip_code_prefix
+              description: first 5 digits of zip code
+              type: TEXT
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: geolocation_lat
+              description: latitude
+              type: DOUBLE PRECISION
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: geolocation_lng
+              description: longitude
+              type: DOUBLE PRECISION
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: geolocation_city
+              description: city name
+              type: TEXT
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: geolocation_state
+              description: state
+              type: TEXT
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+          order_items:
+            name: order_items
+            schema_name: ecommerce
+            description: This dataset includes data about the items purchased within
+              each order.
+            primary_keys:
+            - order_id
+            - order_item_id
+            foreign_keys:
+            - constrained_columns:
+              - order_id
+              referred_table: orders
+              referred_schema: ecommerce
+              referred_columns:
+              - order_id
+              name: order_items_order_id_fkey
+            - constrained_columns:
+              - product_id
+              referred_table: products
+              referred_schema: ecommerce
+              referred_columns:
+              - product_id
+              name: order_items_product_id_fkey
+            - constrained_columns:
+              - seller_id
+              referred_table: sellers
+              referred_schema: ecommerce
+              referred_columns:
+              - seller_id
+              name: order_items_seller_id_fkey
+            columns:
+            - name: order_id
+              description: order unique identifier
+              type: TEXT
+              is_primary_key: true
+              is_nullable: false
+              foreign_keys:
+              - referred_table: orders
+                referred_schema: ecommerce
+                referred_columns:
+                - order_id
+                name: order_items_order_id_fkey
+            - name: order_item_id
+              description: sequential number identifying number of items included
+                in the same order.
+              type: INTEGER
+              is_primary_key: true
+              is_nullable: false
+              foreign_keys: []
+            - name: product_id
+              description: product unique identifier
+              type: TEXT
+              is_primary_key: false
+              is_nullable: false
+              foreign_keys:
+              - referred_table: products
+                referred_schema: ecommerce
+                referred_columns:
+                - product_id
+                name: order_items_product_id_fkey
+            - name: seller_id
+              description: seller unique identifier
+              type: TEXT
+              is_primary_key: false
+              is_nullable: false
+              foreign_keys:
+              - referred_table: sellers
+                referred_schema: ecommerce
+                referred_columns:
+                - seller_id
+                name: order_items_seller_id_fkey
+            - name: shipping_limit_date
+              description: Shows the seller shipping limit date for handling the order
+                over to the logistic partner.
+              type: TIMESTAMP
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: price
+              description: item price
+              type: DOUBLE PRECISION
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: freight_value
+              description: item freight value item (if an order has more than one
+                item the freight value is splitted between items)
+              type: DOUBLE PRECISION
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+          order_payments:
+            name: order_payments
+            schema_name: ecommerce
+            description: This dataset includes data about the orders payment options.
+            primary_keys:
+            - order_id
+            - payment_sequential
+            foreign_keys:
+            - constrained_columns:
+              - order_id
+              referred_table: orders
+              referred_schema: ecommerce
+              referred_columns:
+              - order_id
+              name: order_payments_order_id_fkey
+            columns:
+            - name: order_id
+              description: unique identifier of an order.
+              type: TEXT
+              is_primary_key: true
+              is_nullable: false
+              foreign_keys:
+              - referred_table: orders
+                referred_schema: ecommerce
+                referred_columns:
+                - order_id
+                name: order_payments_order_id_fkey
+            - name: payment_sequential
+              description: a customer may pay an order with more than one payment
+                method. If he does so, a sequence will be created to accommodate all
+                payments.
+              type: INTEGER
+              is_primary_key: true
+              is_nullable: false
+              foreign_keys: []
+            - name: payment_type
+              description: method of payment chosen by the customer.
+              type: TEXT
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: payment_installments
+              description: number of installments chosen by the customer.
+              type: INTEGER
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: payment_value
+              description: transaction value.
+              type: DOUBLE PRECISION
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+          order_reviews:
+            name: order_reviews
+            schema_name: ecommerce
+            description: This dataset includes data about the reviews made by the
+              customers. After a customer purchases the product from Olist Store a
+              seller gets notified to fulfill that order. Once the customer receives
+              the product, or the estimated delivery date is due, the customer gets
+              a satisfaction survey by email where he can give a note for the purchase
+              experience and write down some comments.
+            primary_keys:
+            - review_id
+            foreign_keys:
+            - constrained_columns:
+              - order_id
+              referred_table: orders
+              referred_schema: ecommerce
+              referred_columns:
+              - order_id
+              name: order_reviews_order_id_fkey
+            columns:
+            - name: review_id
+              description: unique review identifier
+              type: TEXT
+              is_primary_key: true
+              is_nullable: false
+              foreign_keys: []
+            - name: order_id
+              description: unique order identifier
+              type: TEXT
+              is_primary_key: false
+              is_nullable: false
+              foreign_keys:
+              - referred_table: orders
+                referred_schema: ecommerce
+                referred_columns:
+                - order_id
+                name: order_reviews_order_id_fkey
+            - name: review_score
+              description: Note ranging from 1 to 5 given by the customer on a satisfaction
+                survey.
+              type: INTEGER
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: review_comment_title
+              description: Comment title from the review left by the customer, in
+                Portuguese.
+              type: TEXT
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: review_comment_message
+              description: Comment message from the review left by the customer, in
+                Portuguese.
+              type: TEXT
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: review_creation_date
+              description: Shows the date in which the satisfaction survey was sent
+                to the customer.
+              type: TIMESTAMP
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: review_answer_timestamp
+              description: Shows satisfaction survey answer timestamp.
+              type: TIMESTAMP
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+          orders:
+            name: orders
+            schema_name: ecommerce
+            description: This is the core dataset. From each order you might find
+              all other information.
+            primary_keys:
+            - order_id
+            foreign_keys:
+            - constrained_columns:
+              - customer_id
+              referred_table: customers
+              referred_schema: ecommerce
+              referred_columns:
+              - customer_id
+              name: orders_customer_id_fkey
+            columns:
+            - name: order_id
+              description: unique identifier of the order.
+              type: TEXT
+              is_primary_key: true
+              is_nullable: false
+              foreign_keys: []
+            - name: customer_id
+              description: key to the customer dataset. Each order has a unique customer_id.
+              type: TEXT
+              is_primary_key: false
+              is_nullable: false
+              foreign_keys:
+              - referred_table: customers
+                referred_schema: ecommerce
+                referred_columns:
+                - customer_id
+                name: orders_customer_id_fkey
+            - name: order_status
+              description: Reference to the order status (delivered, shipped, etc).
+              type: TEXT
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: order_purchase_timestamp
+              description: Shows the purchase timestamp.
+              type: TIMESTAMP
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: order_approved_at
+              description: Shows the payment approval timestamp.
+              type: TIMESTAMP
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: order_delivered_carrier_date
+              description: Shows the order posting timestamp. When it was handled
+                to the logistic partner.
+              type: TIMESTAMP
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: order_delivered_customer_date
+              description: Shows the actual order delivery date to the customer.
+              type: TIMESTAMP
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: order_estimated_delivery_date
+              description: Shows the estimated delivery date that was informed to
+                customer at the purchase moment.
+              type: TIMESTAMP
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+          product_category_name_translations:
+            name: product_category_name_translations
+            schema_name: ecommerce
+            description: Translates the product_category_name to english.
+            primary_keys:
+            - product_category_name
+            foreign_keys: []
+            columns:
+            - name: product_category_name
+              description: category name in Portuguese
+              type: TEXT
+              is_primary_key: true
+              is_nullable: false
+              foreign_keys: []
+            - name: product_category_name_english
+              description: category name in English
+              type: TEXT
+              is_primary_key: false
+              is_nullable: false
+              foreign_keys: []
+          products:
+            name: products
+            schema_name: ecommerce
+            description: This dataset includes data about the products sold by Olist.
+            primary_keys:
+            - product_id
+            foreign_keys: []
+            columns:
+            - name: product_id
+              description: unique product identifier
+              type: TEXT
+              is_primary_key: true
+              is_nullable: false
+              foreign_keys: []
+            - name: product_category_name
+              description: root category of product, in Portuguese.
+              type: TEXT
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: product_name_lenght
+              description: number of characters extracted from the product name.
+              type: INTEGER
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: product_description_lenght
+              description: number of characters extracted from the product description.
+              type: INTEGER
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: product_photos_qty
+              description: number of product published photos
+              type: INTEGER
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: product_weight_g
+              description: product weight measured in grams.
+              type: INTEGER
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: product_length_cm
+              description: product length measured in centimeters.
+              type: INTEGER
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: product_height_cm
+              description: product height measured in centimeters.
+              type: INTEGER
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: product_width_cm
+              description: product width measured in centimeters.
+              type: INTEGER
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+          sellers:
+            name: sellers
+            schema_name: ecommerce
+            description: This dataset includes data about the sellers that fulfilled
+              orders made at Olist. Use it to find the seller location and to identify
+              which seller fulfilled each product.
+            primary_keys:
+            - seller_id
+            foreign_keys: []
+            columns:
+            - name: seller_id
+              description: seller unique identifier
+              type: TEXT
+              is_primary_key: true
+              is_nullable: false
+              foreign_keys: []
+            - name: seller_zip_code_prefix
+              description: first 5 digits of seller zip code
+              type: TEXT
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: seller_city
+              description: seller city name
+              type: TEXT
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: seller_state
+              description: seller state
+              type: TEXT
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+      marketing:
+        name: marketing
+        tables:
+          closed_deals:
+            name: closed_deals
+            schema_name: marketing
+            description: After a qualified lead fills in a form at a landing page
+              he is contacted by a Sales Development Representative. At this step
+              some information is checked and more information about the lead is gathered.
+            primary_keys:
+            - mql_id
+            foreign_keys:
+            - constrained_columns:
+              - mql_id
+              referred_table: marketing_qualified_leads
+              referred_schema: marketing
+              referred_columns:
+              - mql_id
+              name: closed_deals_mql_id_fkey
+            - constrained_columns:
+              - seller_id
+              referred_table: sellers
+              referred_schema: ecommerce
+              referred_columns:
+              - seller_id
+              name: closed_deals_seller_id_fkey
+            columns:
+            - name: mql_id
+              description: Marketing Qualified Lead id
+              type: TEXT
+              is_primary_key: true
+              is_nullable: false
+              foreign_keys:
+              - referred_table: marketing_qualified_leads
+                referred_schema: marketing
+                referred_columns:
+                - mql_id
+                name: closed_deals_mql_id_fkey
+            - name: seller_id
+              description: Seller id
+              type: TEXT
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys:
+              - referred_table: sellers
+                referred_schema: ecommerce
+                referred_columns:
+                - seller_id
+                name: closed_deals_seller_id_fkey
+            - name: sdr_id
+              description: Sales Development Representative id
+              type: TEXT
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: sr_id
+              description: Sales Representative
+              type: TEXT
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: won_date
+              description: Date the deal was closed.
+              type: TIMESTAMP
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: business_segment
+              description: Lead business segment. Informed on contact.
+              type: TEXT
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: lead_type
+              description: Lead type. Informed on contact.
+              type: TEXT
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: lead_behaviour_profile
+              description: Lead behaviour profile. SDR identify it on contact.
+              type: TEXT
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: has_company
+              description: Does the lead have a company (formal documentation)?
+              type: TEXT
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: has_gtin
+              description: Does the lead have Global Trade Item Number (barcode) for
+                his products?
+              type: TEXT
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: average_stock
+              description: Lead declared average stock. Informed on contact.
+              type: TEXT
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: business_type
+              description: Type of business (reseller/manufacturer etc.)
+              type: TEXT
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: declared_product_catalog_size
+              description: Lead declared catalog size. Informed on contact.
+              type: DOUBLE PRECISION
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: declared_monthly_revenue
+              description: Lead declared estimated monthly revenue. Informed on contact.
+              type: DOUBLE PRECISION
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+          marketing_qualified_leads:
+            name: marketing_qualified_leads
+            schema_name: marketing
+            description: After a lead fills in a form at a landing page, a filter
+              is made to select the ones that are qualified to sell their products
+              at Olist. They are the Marketing Qualified Leads (MQLs).
+            primary_keys:
+            - mql_id
+            foreign_keys: []
+            columns:
+            - name: mql_id
+              description: Marketing Qualified Lead id
+              type: TEXT
+              is_primary_key: true
+              is_nullable: false
+              foreign_keys: []
+            - name: first_contact_date
+              description: Date of the first contact solicitation.
+              type: DATE
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: landing_page_id
+              description: Landing page id where the lead was acquired
+              type: TEXT
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []
+            - name: origin
+              description: Type of media where the lead was acquired
+              type: TEXT
+              is_primary_key: false
+              is_nullable: true
+              foreign_keys: []

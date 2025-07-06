@@ -1,0 +1,6 @@
+database:
+  host: localhost
+  port: 5432
+  database: olist_ecommerce
+  username: postgres
+  password: postgres

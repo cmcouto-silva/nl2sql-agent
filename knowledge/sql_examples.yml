@@ -1,0 +1,25 @@
+# Simple SQL examples for few-shot learning
+
+total_orders:
+  question: "How many orders are there in total?"
+  sql: 'SELECT COUNT(*) FROM "ecommerce"."orders"'
+
+orders_by_status:
+  question: "What is the distribution of orders by status?"
+  sql: 'SELECT "order_status", COUNT(*) FROM "ecommerce"."orders" GROUP BY "order_status"'
+
+top_cities:
+  question: "Which cities have the most customers?"
+  sql: 'SELECT "customer_city", COUNT(*) FROM "ecommerce"."customers" GROUP BY "customer_city" ORDER BY COUNT(*) DESC LIMIT 10'
+
+orders_with_customer:
+  question: "Show me orders with customer information"
+  sql: 'SELECT o."order_id", o."order_status", c."customer_city" FROM "ecommerce"."orders" o JOIN "ecommerce"."customers" c ON o."customer_id" = c."customer_id"'
+
+monthly_revenue:
+  question: "What is the total revenue by month?"
+  sql: 'SELECT DATE_TRUNC(''month'', o."order_purchase_timestamp") as month, SUM(oi."price") as revenue FROM "ecommerce"."orders" o JOIN "ecommerce"."order_items" oi ON o."order_id" = oi."order_id" GROUP BY month ORDER BY month'
+
+popular_categories:
+  question: "What are the most popular product categories?"
+  sql: 'SELECT p."product_category_name", COUNT(*) FROM "ecommerce"."order_items" oi JOIN "ecommerce"."products" p ON oi."product_id" = p."product_id" GROUP BY p."product_category_name" ORDER BY COUNT(*) DESC' 

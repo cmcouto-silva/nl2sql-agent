@@ -1,0 +1,16 @@
+olist_ecommerce:
+
+  ecommerce:
+    - customers
+    - geolocation
+    - order_items
+    - order_payments
+    - order_reviews
+    - orders
+    - product_category_name_translations
+    - products
+    - sellers
+
+  marketing:
+    - closed_deals
+    - marketing_qualified_leads

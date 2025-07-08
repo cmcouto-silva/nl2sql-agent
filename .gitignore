@@ -201,3 +201,6 @@ cython_debug/
 # ProjectLens
 nl2sql_codebase.txt
 scripts/generate_codebase.sh
+
+# Project specific files
+knowledge/data_dictionary.yml

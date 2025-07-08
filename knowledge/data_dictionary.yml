@@ -61,7 +61,7 @@ databases:
             foreign_keys: []
             columns:
             - name: geolocation_id
-              description: Primary Key
+              description: Surrogate key for geolocation entries
               type: INTEGER
               is_primary_key: true
               is_nullable: false

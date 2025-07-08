@@ -46,6 +46,7 @@ Before getting started, you'll need to install the required tools and dependenci
 See the [prerequisites](docs/prerequisites.md) for detailed installation instructions.
 
 **Required:**
+
 - [Git](https://git-scm.com/) for cloning the repository and switching between branches
 - [UV](https://docs.astral.sh/uv/getting-started/installation/) for Python project management
 - PostgreSQL client libraries to query the database

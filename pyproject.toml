@@ -21,6 +21,7 @@ keywords = [
 
 ]
 dependencies = [
+    "chromadb>=1.0.20",
     "fastapi>=0.115.5",
     "httpx>=0.28.1",
     "langchain>=0.3.26",
@@ -29,12 +30,17 @@ dependencies = [
     "langchain-postgres>=0.0.15",
     "langgraph>=0.5.1",
     "langgraph-checkpoint-postgres>=2.0.21",
+    "llama-index-core>=0.13.3",
+    "llama-index-embeddings-openai>=0.5.0",
+    "llama-index-llms-openai>=0.5.4",
     "loguru>=0.7.3",
+    "nbformat>=5.10.4",
     "pandas>=2.3.0",
     "psycopg[binary]>=3.2.9",
     "sqlparse>=0.5.3",
     "tabulate>=0.9.0",
     "uvicorn>=0.34.0",
+    "vanna[postgres]>=0.7.9",
 ]
 
 [tool.pytest.ini_options]
@@ -64,7 +70,7 @@ default-groups = ["dev", "notebook"]
 [tool.ruff]
 line-length = 88   # Like Black, use 88 characters per line.
 indent-width = 4   # Like Black, use 4 spaces per indentation level.
-exclude = ["*.ipynb"] # Exclude Jupyter notebooks from linting.
+# exclude = ["*.ipynb"] # Exclude Jupyter notebooks from linting.
 
 [tool.ruff.lint]
 select = [
